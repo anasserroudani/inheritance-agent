@@ -1,0 +1,19 @@
+{
+  "name": "engine",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "fraction.js": "^4.3.7"
+  },
+  "scripts": {
+    "test": "node --test agent/test.mjs agent/agent.test.mjs agent/web.test.mjs agent/fiqh.test.mjs agent/data.test.mjs",
+    "chat": "node agent/cli.js",
+    "build:index": "node scripts/build-moudawana-index.mjs",
+    "start": "node server.js",
+    "demo": "node server.js --demo",
+    "eval:search": "node scripts/eval-search.mjs",
+    "eval:engine": "node eval/fuzz-engine.mjs",
+    "build:fiqh": "node scripts/build-fiqh-knowledge.mjs",
+    "build:data": "node scripts/build-moudawana-index.mjs && node scripts/build-fiqh-knowledge.mjs"
+  }
+}
