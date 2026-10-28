@@ -1,10 +1,19 @@
 import { CALCULATE_TOOL, runCalculate, forModel } from "./tool.js";
-import { SEARCH_TOOL, searchMoudawana, FIQH_TOOL, searchFiqh, hasFiqh } from "./search.js";
-import { SYSTEM_PROMPT, FIQH_RULE } from "./prompt.js";
+import { SEARCH_TOOL, searchMoudawana, FIQH_TOOL, searchFiqh, hasFiqh, ALUBAB_TOOL, searchAlubab, hasAlubab } from "./search.js";
+import { SYSTEM_PROMPT, FIQH_RULE, ALUBAB_RULE } from "./prompt.js";
 
-// the fiqh tool only exists if data/fiqh.json was built
-export const TOOLS = [CALCULATE_TOOL, SEARCH_TOOL, ...(hasFiqh ? [FIQH_TOOL] : [])];
-const SYSTEM = SYSTEM_PROMPT + (hasFiqh ? FIQH_RULE : "");
+// Tools activate dynamically based on the existence of their respective data stores
+export const TOOLS = [
+  CALCULATE_TOOL, 
+  SEARCH_TOOL, 
+  ...(hasFiqh ? [FIQH_TOOL] : []),
+  ...(hasAlubab ? [ALUBAB_TOOL] : [])
+];
+
+const SYSTEM = SYSTEM_PROMPT 
+  + (hasFiqh ? FIQH_RULE : "") 
+  + (hasAlubab ? ALUBAB_RULE : "");
+
 const MAX_STEPS = 6;
 
 export function executeTool(name, input) {
@@ -19,6 +28,9 @@ export function executeTool(name, input) {
     }
     if (name === FIQH_TOOL.name && hasFiqh) {
       return { content: searchFiqh(input?.query ?? ""), isError: false };
+    }
+    if (name === ALUBAB_TOOL.name && hasAlubab) {
+      return { content: searchAlubab(input?.query ?? ""), isError: false };
     }
     return { content: { error: `Unknown tool ${name}` }, isError: true };
   } catch (e) {

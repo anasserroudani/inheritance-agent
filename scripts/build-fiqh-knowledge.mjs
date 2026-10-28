@@ -33,6 +33,7 @@ function cleanLine(line) {
     if (!/[؀-ۿ]{2}/.test(l)) return "";
   }
   l = l.replace(/\s*\[\d+(?:\s*[،,]\s*\d+)*\]/g, "");            // citation marks like [37، 38]
+  l = l.replace(/\s*\[cite:\s*[\d\s,،]+\]/g, "");                // citation marks like [cite: 10]
   l = plainMath(l);
   return l.replace(/^[-*•]\s+/, "").trim();                      // bullet signs
 }

@@ -1,19 +1,25 @@
 # Inheritance agent
 
+# Inheritance agent
+
 An AI agent that answers inheritance questions (Maliki school, Moroccan Moudawana) on top of the
 existing calculation engine, and explains every result.
 
-The model does no maths. It does four things:
+The model does no maths. It does five things:
 
 1. understands the question and turns it into a list of heirs,
 2. calls the engine (`calculate_inheritance`) to get exact shares, the base, awl/radd and the reason for each heir,
-3. looks for the evidence: the Moudawana articles (`search_moudawana`) and the book (`search_fiqh_book`),
+3. looks for the evidence: the Moudawana articles (`search_moudawana`), the primary book (`search_fiqh_book`), and the advanced jurisprudence index (`search_alubab_book`),
 4. writes the answer as a short proof the user can check.
+
+
 
 ```
 user -> model -> calculate_inheritance (engine, exact fractions)
               -> search_moudawana   (400 articles, Book 6 = inheritance)
-              -> search_fiqh_book   (book "دروس في الفرائض", 100 passages, page numbers when known)
+              -> search_fiqh_book   (book "دروس في الفرائض", 100 
+              passages, page numbers when known)
+              -> search_alubab_book (book "اللباب في شرح تحفة الطلاب", structural index with chapter pages)
      <- answer: heirs understood, blocked heirs, share + reason, base/awl/radd, article + book page
 ```
 
@@ -62,6 +68,7 @@ The agent may use ONLY these sources (nothing else is in the index, this is chec
 | Moudawana (400 articles) | `data/moudawana-clean.txt` -> `data/moudawana.json` | `search_moudawana` |
 | Book "دروس في الفرائض" (RTF: lessons with page numbers + 10 summary nodes) | `data/faraid.rtf` -> `data/fiqh-book.txt` -> `data/fiqh.json` | `search_fiqh_book` |
 | The calculation | `engine.js` and `engine/` (unchanged, as received) | `calculate_inheritance` |
+| Book "اللباب في شرح تحفة الطلاب" | `data/al_lubab_cleaned_2.txt` -> `data/alubab.json` | `search_alubab_book` |
 
 To change the knowledge: replace the file in `data/`, then run `npm run build:data` and `npm test`.
 The book RTF (made by macOS TextEdit) stores the Arabic in the Windows-1256 code page, so it is converted in two steps
@@ -78,8 +85,8 @@ npm run eval:engine     # 20,000 random families through the engine, with legal 
 
 The prompt (`prompt.js`) makes the model answer in this order: heirs understood, blocked heirs and why,
 share of each heir with the reason (the engine's own text, with article numbers), the numbers
-(base, awl base, radd, special case), the evidence (article + book page, only from the passages found),
-and a short note to check with an adoul. If no source is found it must say so.
+(base, awl base, radd, special case), the evidence (article, Faraid book page, and Al Lubab chapter details),
+
 
 ## Files
 

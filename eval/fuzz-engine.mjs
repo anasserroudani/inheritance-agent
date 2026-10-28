@@ -7,6 +7,7 @@ import { runCalculate, HEIR_CODES } from "../agent/tool.js";
 let seed = Number(process.env.SEED) || 12345;
 const rnd = () => ((seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296);
 const pick = (a) => a[Math.floor(rnd() * a.length)];
+const notes = {}; // things worth telling the user at the end
 const SINGLE = new Set(["FATHER", "MOTHER", "PATERNAL_GRANDFATHER", "PATERNAL_GREAT_GRANDFATHER", "PATERNAL_GRANDMOTHER", "MATERNAL_GRANDMOTHER", "MATERNAL_GREAT_GRANDMOTHER", "PATERNAL_GREAT_GRANDMOTHER", "MATERNAL_PATERNAL_GREAT_GRANDMOTHER"]);
 const PEOPLE = HEIR_CODES.filter((c) => c !== "HUSBAND" && c !== "WIFE");
 
@@ -54,7 +55,6 @@ function legalProblems(r) {
 
 const N = Number(process.env.N) || 20000;
 const seen = {};
-const notes = {};
 const problems = new Map();
 let ok = 0, noHeirs = 0, engineErrors = 0;
 

@@ -190,7 +190,7 @@ function sourcesBox(sources) {
   let current = null;
 
   sources.forEach((s) => {
-    const label = s.kind === "law" ? `المادة ${s.article}` : `دروس في الفرائض${s.page ? " · ص " + s.page : ""}`;
+    const label = s.kind === "law" ? `المادة ${s.article}` : `${String(s.source || "").includes("اللباب") ? "اللباب" : "دروس في الفرائض"}${s.page ? " · ص " + s.page : ""}`;
     const b = el("button", "chip", label);
     b.type = "button";
     b.addEventListener("click", () => {
@@ -261,7 +261,7 @@ function welcome() {
   const star = el("div", "star"); star.innerHTML = SVG_STAR;
   box.appendChild(star);
   box.appendChild(el("h2", "", "كيف يمكنني مساعدتك؟"));
-  box.appendChild(el("p", "lead", "اشرح مسألتك بكلماتك، أو اسأل عن حكم في الإرث. تُحسب الأنصبة بالمحرك الشرعي، ويُستشهد في الجواب بمواد مدونة الأسرة وبكتاب «دروس في الفرائض» فقط."));
+  box.appendChild(el("p", "lead", "اشرح مسألتك بكلماتك، أو اسأل عن حكم في الإرث. تُحسب الأنصبة بالمحرك الشرعي، ويُستشهد في الجواب بمواد مدونة الأسرة وبكتابَي «دروس في الفرائض» و«اللباب» فقط."));
   const cards = el("div", "cards");
   SUGGESTIONS.forEach((s) => {
     const b = el("button", "card");

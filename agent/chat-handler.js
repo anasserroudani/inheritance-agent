@@ -49,7 +49,7 @@ export function citedSources(answer, found) {
     seen.add(key);
     out.push(f.kind === "law"
       ? { kind: "law", article: f.article, book: f.book, section: f.section, text: f.text }
-      : { kind: "book", page: f.page, title: f.title, text: f.text });
+      : { kind: "book", source: f.source, page: f.page, title: f.title, text: f.text });
   }
   return out;
 }
@@ -76,6 +76,7 @@ export async function handleChat(provider, body) {
       if (call.name === "calculate_inheritance" && !out.isError) calc = out.content;
       if (call.name === "search_moudawana" && Array.isArray(out.content)) found.push(...out.content.map((a) => ({ kind: "law", ...a })));
       if (call.name === "search_fiqh_book" && Array.isArray(out.content)) found.push(...out.content.map((p) => ({ kind: "book", ...p })));
+      if (call.name === "search_alubab_book" && Array.isArray(out.content)) found.push(...out.content.map((p) => ({ kind: "book", ...p })));
     },
   });
   return { answer: r.answer, calc, sources: citedSources(r.answer, found), usage: r.usage };

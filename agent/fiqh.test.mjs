@@ -32,7 +32,8 @@ test("with an empty fiqh index the fiqh tool is off", () => {
     console.log(JSON.stringify({ tools: TOOLS.map(t => t.name), call: executeTool("search_fiqh_book", {query:"x"}).isError }));`,
     { FIQH_INDEX: tmpFile("[]") });
   const r = JSON.parse(out);
-  assert.deepEqual(r.tools, ["calculate_inheritance", "search_moudawana"]);
+  assert.ok(r.tools.includes("calculate_inheritance") && r.tools.includes("search_moudawana"));
+  assert.equal(r.tools.includes("search_fiqh_book"), false);
   assert.equal(r.call, true);
 });
 

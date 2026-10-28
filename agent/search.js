@@ -116,3 +116,43 @@ export const FIQH_TOOL = {
     required: ["query"],
   },
 };
+
+// ---------- Al Lubab book ----------
+// Made by scripts/build-alubab-knowledge.mjs: a list of passages { source, author, page, title, text }.
+// The older nested shape (content_summary.chapters_covered) is still accepted.
+const alubabRaw = loadJson("alubab.json");
+const ALUBAB_PASSAGES = Array.isArray(alubabRaw)
+  ? alubabRaw
+  : (alubabRaw?.content_summary?.chapters_covered ?? []).map((c) => ({
+      source: alubabRaw.document_title, author: alubabRaw.author, page: c.pages, title: c.title, text: c.details,
+    }));
+export const hasAlubab = ALUBAB_PASSAGES.length > 0;
+
+// title counts twice, like in the fiqh book index
+const alubabIndex = hasAlubab ? buildIndex(ALUBAB_PASSAGES, (p) => `${p.title ?? ""} ${p.title ?? ""} ${p.text ?? ""}`) : null;
+
+export function searchAlubab(query, k = 4, max = 900) {
+  if (!hasAlubab) return [];
+  return rank(alubabIndex, expandQuery(String(query), { swapped: false }))
+    .slice(0, k)
+    .map((p) => ({
+      source: p.source || "اللباب في شرح تحفة الطلاب",
+      author: p.author || undefined,
+      page: p.page ?? undefined, // for example "43 - 50"
+      title: p.title || undefined,
+      text: cut(p.text ?? "", max),
+    }));
+}
+
+export const ALUBAB_TOOL = {
+  name: "search_alubab_book",
+  description:
+    "Searches the comprehensive structural index of the Maliki inheritance manual Al Lubab (اللباب في شرح تحفة الطلاب للتاويل). " +
+    "Use it to find the exact pages, chapters, and summary details for complex topics like Al-Muda'ah, Akdariyya, Umariyya, " +
+    "or specific impediment details (murder, apostasy, etc.). Query must be in ARABIC.",
+  input_schema: {
+    type: "object",
+    properties: { query: { type: "string", description: "Arabic search query for Al Lubab chapters." } },
+    required: ["query"],
+  },
+};
